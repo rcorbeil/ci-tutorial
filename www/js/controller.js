@@ -5,7 +5,9 @@ angular.module('starter.controllers', [ ])
             $scope.repeat= {};
             
             $scope.regSubmitForm = function(form){
+                if($scope.repeat.repeatPassword === $scope.reg.password){
                     if(form.$valid){
+                       // if($scope.repeat.repeatPassword === $scope.reg.password){
                           UserService.create($scope.reg)
                         .then(function(response) {
                             if (response.status === 200) {
@@ -31,8 +33,9 @@ angular.module('starter.controllers', [ ])
                             }else {
                                 alert("Something went wrong, repsone fail try again.");
                             }
-                         }); 
-                }else{alert("Invaild");}    
+                         });
+                        }
+               }else{alert("Opps the Passwords dont match :( try again!");}    
             };
     }])
     
