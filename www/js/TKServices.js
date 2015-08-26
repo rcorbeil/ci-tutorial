@@ -16,4 +16,68 @@ angular.module('TKServicesModule', [])
             }); 
             return results;
         };
+        service.questionsLength = function(){
+            return questions.length;
+        };
+    })
+    .service('TKAnswersService', function(){
+        var lastQuestionNumber = 0;
+        var categoriesStack = [];
+        var service = this;
+        var answerCategories = {
+            "competing": 0,
+            "collaborating": 0,
+            "compromising": 0,
+            "avoiding": 0,
+            "accommodating": 0
+        };
+        var answers = {};
+        
+        service.setLastQuestionNumber = function(qNumber){
+            lastQuestionNumber = qNumber;  
+        };
+            
+        service.getLastQuestionNumber = function() {
+            return lastQuestionNumber;  
+        };
+        
+        service.eraseLastAnswer = function(){
+            answerCategories[categoriesStack.pop().toLowerCase()]--;
+        };
+        
+        service.saveAnswer = function(questionNumber, answerCategory, option){
+            answerCategories[answerCategory.toLowerCase()]++;
+            answers[questionNumber] = option;
+            categoriesStack.push(answerCategory);
+        };   
+        service.getAnswers = function(){
+            return answerCategories;
+        };
+        service.setAnswers = function(answers){
+            answerCategories = answers;
+        };
+        service.resetAnswers = function(){
+            for (var property in answerCategories) {
+                if (answerCategories.hasOwnProperty(property)) {
+                    answerCategories[property] = 0;
+                    lastQuestionNumber = 0;
+                }
+            }
+        };
+    })
+    .service('TKResultsButtonService', function(){
+        var service = this;
+        
+        var shouldShowButton = false;
+        
+        service.setShouldShowMenuButton = function(show)
+        {
+            shouldShowButton = show;
+        };
+        
+        service.getShouldShowMenuButton = function()
+        {
+            return shouldShowButton;
+        };
     });
+
