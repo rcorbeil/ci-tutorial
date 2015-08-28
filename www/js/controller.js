@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [ ])
-    .controller('RegisterCtrl',['$scope', '$state', 'UserService', '$ionicHistory', '$window', 
-    function($scope, $state, UserService, $ionicHistory, $window) {
+    .controller('RegisterCtrl',['$scope', '$state', 'UserService', '$ionicHistory', '$window', 'SSFAlertsService',
+    function($scope, $state, UserService, $ionicHistory, $window, SSFAlertsService) {
             $scope.reg = {};
             $scope.repeat= {};
             
@@ -43,7 +43,7 @@ angular.module('starter.controllers', [ ])
             $scope.regSubmitForm = function(form){
                     if(form.$valid){
                        if($scope.repeat.repeatPassword !== $scope.reg.password){
-                           alert("Opps the Passwords dont match :( try again!");
+                           SSFAlertsService.showAlert("Error", "Opps the Passwords dont match :( try again!");
                          }else{
                              UserService.create($scope.reg)
                         .then(function(response) {
@@ -54,19 +54,19 @@ angular.module('starter.controllers', [ ])
                                 form.$setPristine();
                             } else {
                                 // invalid response
-                                alert("Something went wrong, try again.");
+                                SSFAlertsService.showAlert("Error", "Something went wrong, try again."); 
                             }
                             
                         }, function(response) {
                             // Code 401 corresponds to Unauthorized access, in this case, the email/password combination was incorrect.
                             if(response.status === 422)
                             {
-                                alert("Email and Password are already registered");
+                                SSFAlertsService.showAlert("Error", "Email and Password are already registered"); 
                             }else if(response.data === null) {
                         //If the data is null, it means there is no internet connection. 
-                                alert("The connection with the server was unsuccessful, check your internet connection and try again later.");
+                                SSFAlertsService.showAlert("Error", "The connection with the server was unsuccessful, check your internet connection and try again later.");
                             }else {
-                                alert("Something went wrong, repsone fail try again.");
+                                SSFAlertsService.showAlert("Error", "Something went wrong, repsone fail try again.");
                             }
                          });
                         }   
@@ -74,8 +74,8 @@ angular.module('starter.controllers', [ ])
             };
     }])
     
-    .controller('LoginCtrl',['$scope', '$state', 'UserService', '$ionicHistory',
-         '$window', function($scope, $state, UserService, $ionicHistory, $window) {
+    .controller('LoginCtrl',['$scope', '$state', 'UserService', '$ionicHistory', 'SSFAlertsService',
+         '$window', function($scope, $state, UserService, $ionicHistory, SSFAlertsService, $window) {
             $scope.user = {};
         
             var rememberMeValue;
@@ -117,18 +117,18 @@ angular.module('starter.controllers', [ ])
                     form.$setPristine();
                 } else {
                     // invalid response
-                    alert("Something went wrong, try again.");
+                    SSFAlertsService.showAlert("Error", "Something went wrong, try again.");
                 }
             }, function(response) {
                 // Code 401 corresponds to Unauthorized access, in this case, the email/password combination was incorrect.
                 if(response.status === 401)
                 {
-                    alert("Incorrect username or password");
+                     SSFAlertsService.showAlert("Error", "Incorrect username or password");
                 }else if(response.data === null) {
 //If the data is null, it means there is no internet connection. 
-                    alert("The connection with the server was unsuccessful, check your internet connection and try again later.");
+                     SSFAlertsService.showAlert("Error", "The connection with the server was unsuccessful, check your internet connection and try again later.");
                 }else {
-                    alert("Something went wrong, try again.");
+                     SSFAlertsService.showAlert("Error", "Something went wrong, try again.");
                 }
 
              });
@@ -148,8 +148,8 @@ angular.module('starter.controllers', [ ])
     */
     
     .controller('LobbyCtrl',['$scope', '$state', '$ionicHistory', 'UserService', 
-    '$window','TKQuestionsService', 'ServerQuestionService','TKAnswersService', 
-    function($scope, $state, $ionicHistory, UserService, $window, TKQuestionsService, ServerQuestionService, TKAnswersService) {
+    '$window','TKQuestionsService', 'ServerQuestionService','TKAnswersService', 'SSFAlertsService', 
+    function($scope, $state, $ionicHistory, UserService, $window, TKQuestionsService, ServerQuestionService, TKAnswersService, SSFAlertsService) {
             
             /*needs the logout function to be added to documentation
             inorder to control the flow of the controller. Otherwise, 
@@ -169,16 +169,18 @@ angular.module('starter.controllers', [ ])
                     //The successful code for logout is 204
                     if(response.status === 204)
                     {
+                        delete $window.localStorage['token'];
+                        delete $window.localStorage['userID'];
                         $ionicHistory.nextViewOptions({
                           historyRoot: true,
                           disableBack: true
                         });
                         $state.go('landing');
                     }else {
-                         alert("Could not logout at this moment, try again.");
+                          SSFAlertsService.showAlert("Error", "Could not logout at this moment, try again.");
                     }
                 }, function(response) {
-                    alert("Could not logout at this moment, try again.");
+                     SSFAlertsService.showAlert("Error", "Could not logout at this moment, try again.");
                 });
             };
             
@@ -193,7 +195,7 @@ angular.module('starter.controllers', [ ])
                         var questions = response.data;
                         TKQuestionsService.setQuestions(questions);
                         $window.localStorage.questions = JSON.stringify(questions);
-                    } else {
+                    } else if (response.data !== 401){
                         // invalid response
                         confirmPrompt();
                     }
@@ -203,10 +205,12 @@ angular.module('starter.controllers', [ ])
                 });
             }
             function confirmPrompt(){
-                var response = confirm("The questions could not be retrieved at this time, do you want to try again?");
-                if (response == true) {
-                    getQuestions();
-                }
+                SSFAlertsService.showConfirm("Error", "The questions could not be retrieved at this time, do you want to try again?")
+                    .then(function(response) {
+                        if (response == true) {
+                            getQuestions();
+                        }
+                    });
             }
             
             $scope.takeTestButtonTapped = function()
@@ -232,9 +236,9 @@ angular.module('starter.controllers', [ ])
       });
     */
     .controller('TestCtrl', ['$scope', 'testInfo', '$stateParams', '$state', '$window', 'TKQuestionsService', 
-    'TKAnswersService', 'ServerAnswersService', '$ionicHistory', 'TKResultsButtonService',
+    'TKAnswersService', 'ServerAnswersService', '$ionicHistory', 'TKResultsButtonService', 'SSFAlertsService',
     function($scope, testInfo, $stateParams, $state, $window, TKQuestionsService, 
-    TKAnswersService, ServerAnswersService, $ionicHistory, TKResultsButtonService){
+    TKAnswersService, ServerAnswersService, $ionicHistory, TKResultsButtonService, SSFAlertsService){
             //testInfo is passed in the router to obtain the questions
             var qNumber = $stateParams.testID;
             $scope.title = "Question #"+qNumber;
@@ -269,7 +273,7 @@ angular.module('starter.controllers', [ ])
                        });
                        TKResultsButtonService.setShouldShowMenuButton(true);
                        $state.go('results');
-                     } else {
+                     } else if(response.data !== 401){
                         // invalid response
                         confirmPrompt();
                      }
@@ -281,16 +285,17 @@ angular.module('starter.controllers', [ ])
 
 
             function confirmPrompt(){
-                var response = confirm("The answers could not be saved at the moment, do you want to try again?");
-                if (response == true) {
-                    performRequest();
-                }else {
-                    $ionicHistory.nextViewOptions({
-                        disableBack: true
-                    });
+                SSFAlertsService.showConfirm("Error", "The answers could not be saved at the moment, do you want to try again?").then(function(response) {
+                    if (response == true) {
+                        performRequest();
+                    }else {
+                        $ionicHistory.nextViewOptions({
+                            disableBack: true
+                        })
+                    }
                     TKResultsButtonService.setShouldShowMenuButton(true);
                     $state.go('results');
-                }
+                });
             }
 
 
@@ -304,7 +309,7 @@ angular.module('starter.controllers', [ ])
                 }else {
                     $state.go('test.detail',{testID:nextqNumber});
                 }
-            };
+            }
         }])
         
         .controller('ResultsCtrl', ['$scope', 'TKAnswersService', '$ionicHistory', '$state', 'TKResultsButtonService',
@@ -357,8 +362,8 @@ angular.module('starter.controllers', [ ])
                 }
         }])
         
-        .controller('HistoryCtrl', ['$scope', 'ServerAnswersService', '$window', '$state', 'TKAnswersService', 'TKResultsButtonService', 
-        function($scope, ServerAnswersService, $window, $state, TKAnswersService, TKResultsButtonService){
+        .controller('HistoryCtrl', ['$scope', 'ServerAnswersService', '$window', '$state', 'TKAnswersService', 'TKResultsButtonService', 'SSFAlertsService', 
+        function($scope, ServerAnswersService, $window, $state, TKAnswersService, TKResultsButtonService, SSFAlertsService){
             $scope.tests = [];
             
             performRequest();
@@ -368,7 +373,7 @@ angular.module('starter.controllers', [ ])
                 .then(function(response) {
                         if (response.status === 200) {
                             $scope.tests = response.data;
-                        } else {
+                        } else if (response.data !== 401){
                             // invalid 
                             confirmPrompt();
                         }
@@ -380,10 +385,12 @@ angular.module('starter.controllers', [ ])
                 }
                 
             function confirmPrompt(){
-                var response = confirm("The tests could not be retrieved at the moment, do you want to try again?");
-                if (response == true) {
-                    performRequest();
-                }
+                SSFAlertsService.showConfirm("Error", "The tests could not be retrieved at the moment, do you want to try again?")
+                .then(function(response) {
+                    if (response == true) {
+                        performRequest();
+                    }
+                });
             }
             
             $scope.goToResult = function(test){
