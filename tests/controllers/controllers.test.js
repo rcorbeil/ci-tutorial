@@ -1,7 +1,7 @@
 describe('Controllers', function(){
     var scope;
 
-    // load the controller's module
+    // load the controller's module 
     beforeEach(module('ionic'));
     beforeEach(module('starter.controllers'));
     beforeEach(module('RESTConnection'));
