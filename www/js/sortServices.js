@@ -5,7 +5,7 @@ angular.module('sortServices', [])
         var swapped;
         do {
           swapped = false;
-          for( var i=0; i<sortedArray.length-2; i++){
+          for( var i=0; i<sortedArray.length-1; i++){
             if( sortedArray[i].localeCompare(sortedArray[i+1]) > 0) {
               var temp = sortedArray[i];
               sortedArray[i] = sortedArray[i+1];
