@@ -10,8 +10,8 @@ describe('Services', function(){
     
     // tests start here
     it('sorts in ascending order by default', function() {
-    var users = ['jack', 'igor', 'jeff'];
+    var users = ['robin', 'ryn', 'shawn', 'piper', 'lark', 'per', 'teal'];
     var sorted = sortSvcObj.bubbleSort(users);
-    expect(sorted).toEqual(['jeff', 'jack', 'igor']);
+    expect(sorted).toEqual(['lark', 'per', 'piper', 'robin', 'ryn', 'shawn', 'teal']);
   });
 });
