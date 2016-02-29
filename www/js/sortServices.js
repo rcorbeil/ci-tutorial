@@ -16,6 +16,7 @@ angular.module('sortServices', [])
           }
         } while(swapped);
         
+        
         return sortedArray;
     };
   }]);
