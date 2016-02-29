@@ -13,8 +13,8 @@ angular.module('sortServices', [])
               swapped = true;
             }
           }
-        }while(swapped);
+        } while(swapped);
         
-        return sorted;
+        return sortedArray;
     };
   }]);
