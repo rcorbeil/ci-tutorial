@@ -5,6 +5,9 @@ describe('Services', function(){
     
     // load the service's module 
     beforeEach(module('sortServices'));
+    
+    beforeEach(module('TKServicesModule'));
+        
     beforeEach(inject(function( sortSvc ){
       sortSvcObj=sortSvc;
     }));
@@ -18,7 +21,7 @@ describe('Services', function(){
   
     //Test the TKanswers routine
     var answersSvcObj;
-    beforeEach(module('TKServicesModule'));
+
     beforeEach(inject(function( TKAnswersService ){
       answersSvcObj=TKAnswersService;
     }));
@@ -33,7 +36,7 @@ describe('Services', function(){
         };
         
         answersSvcObj.setAnswers(answerCategories);
-        var gottenAnswers = {};//answersSvcObj.getAnswers();
+        var gottenAnswers = answersSvcObj.getAnswers();
         
         expect(gottenAnswers).toEqual(answerCategories);
     });
