@@ -2,6 +2,7 @@ describe('Services', function(){
     var sortSvcObj;
     
     // load the service's module 
+    beforeEach(module('sortServices'));
     beforeEach(inject(function( sortSvc ){
       sortSvcObj=sortSvc;
     }));
