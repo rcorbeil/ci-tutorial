@@ -75,9 +75,13 @@ angular.module('starter.controllers', [ ])
     }])
     
     .controller('LoginCtrl',['$scope', '$state', 'UserService', '$ionicHistory', 'SSFAlertsService',
-         '$window', function($scope, $state, UserService, $ionicHistory, SSFAlertsService, $window) {
+         '$window', '$locale', function($scope, $state, UserService, $ionicHistory, SSFAlertsService, $window, $locale) {
             $scope.user = {};
             $scope.title= "Login";
+
+            $scope.myDate = new Date(1000);
+            
+            console.log(navigator.language);
         
             var rememberMeValue;
             if($window.localStorage["rememberMe"] === undefined || $window.localStorage["rememberMe"] == "true") {

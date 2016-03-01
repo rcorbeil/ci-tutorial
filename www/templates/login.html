@@ -11,8 +11,9 @@
           </div>
           <ion-checkbox ng-model="checkbox.rememberMe" class="no-border">Remember me?</ion-checkbox>
           <button class="button button-block button-positive" type="submit">
-            Login
+            {{'LANDING_CTRL.LOGIN' | translate }}
           </button>
         </form>
+        {{ myDate | date:'fullDate'  }}
     </ion-content>
 </ion-view>
