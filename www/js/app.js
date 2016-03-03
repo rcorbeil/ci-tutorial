@@ -3,7 +3,11 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection', 'TKServicesModule', 'chart.js', 'SSFAlerts', 'pascalprecht.translate'])
+angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection', 'TKServicesModule', 'chart.js', 'SSFAlerts', 'pascalprecht.translate','tmh.dynamicLocale'])
+
+.config(function(tmhDynamicLocaleProvider) {
+ tmhDynamicLocaleProvider.localeLocationPattern("lib/angular-locale/angular-locale_{{locale}}.js");
+})
 
 .config(function($translateProvider) {
     $translateProvider
@@ -27,10 +31,18 @@ $translateProvider
 })
 
 
-.run(["$ionicPlatform", "$window", "$state", "$translate", function($ionicPlatform, $window, $state, $translate) {
+.run(["$ionicPlatform", "$window", "$state", "$translate", 'tmhDynamicLocale' ,function($ionicPlatform, $window, $state, $translate, tmhDynamicLocale) {
   $ionicPlatform.ready(function() {
     // For testing languages, set spanish
-    $translate.use('es');
+    // $translate.use('es_us');
+    
+/*
+if(typeof navigator.globalization !== "undefined") {
+        navigator.globalization.getPreferredLanguage(function(language) {
+            tmhDynamicLocale.set((language.value).split("-")[0]+"-us");
+        }, null);
+    }    
+*/
     
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)

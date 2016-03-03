@@ -75,13 +75,24 @@ angular.module('starter.controllers', [ ])
     }])
     
     .controller('LoginCtrl',['$scope', '$state', 'UserService', '$ionicHistory', 'SSFAlertsService',
-         '$window', '$locale', function($scope, $state, UserService, $ionicHistory, SSFAlertsService, $window, $locale) {
+         '$window', '$translate', 'tmhDynamicLocale' ,function($scope, $state, UserService, $ionicHistory, SSFAlertsService, $window, $translate, tmhDynamicLocale ) {
             $scope.user = {};
             $scope.title= "Login";
 
-            $scope.myDate = new Date(1000);
+            if(typeof navigator.globalization !== "undefined") {
+                navigator.globalization.getPreferredLanguage(function(language) {
+                    alert((language.value));
+                    tmhDynamicLocale.set((language.value).split("-")[0]+"-us");
+                    alert((language.value).split("-")[0]+"-us");
+                }, null);
+            }
+            
+    
+            $scope.myDate = new Date();
             
             console.log(navigator.language);
+            
+        
         
             var rememberMeValue;
             if($window.localStorage["rememberMe"] === undefined || $window.localStorage["rememberMe"] == "true") {
